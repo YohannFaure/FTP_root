@@ -1,7 +1,7 @@
 import numpy as np
 import os
 
-
+# Load data
 loc1="C:/FTP_root/DATA/acq2106_178/stream.csv"
 loc2="C:/FTP_root/DATA/acq2106_377/stream.csv"
 loc="C:/FTP_root/DATA/slowmon.npy"
@@ -10,6 +10,7 @@ loc_dict="C:/FTP_root/DATA/Full_Daq.npy"
 data1=np.loadtxt(loc1,delimiter=",").T
 data2=np.loadtxt(loc2,delimiter=",").T
 
+# find the longest one to synchronize
 s1=data1.shape[-1]
 s2=data2.shape[-1]
 
@@ -19,6 +20,14 @@ elif s2>s1:
     arr=np.concatenate((data1[1:,:],data2[1:,s2-s1:]),0)
 else :
     arr=np.concatenate((data1[1:,:],data2[1:,:]),0)
+
+# reshape to only keep a multiple of 4 in length
+arr=arr[:,-(arr.shape[-1]//4)*4:]
+
+# mean on 4
+arr=(arr.reshape((arr.shape[0],arr.shape[1]//4,4))).mean(axis=-1)
+
+
 
 np.save(loc,arr)
 
@@ -53,7 +62,7 @@ def calibration(data):
 
 data=calibration(arr)
 
-datadict={"data":data,"ylabels":ylabels,"sampling_freq_in":99,"navg":1}
+datadict={"data":data,"ylabels":ylabels,"sampling_freq_in":1,"navg":1}
 
 np.save(loc_dict,datadict)
 
