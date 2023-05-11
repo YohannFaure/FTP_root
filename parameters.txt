@@ -1,0 +1,11 @@
+# reference frequency for the computation
+f_ref=1.915
+
+# FS Demand (CSS>capture>Slowmon)
+fs_demand=85
+
+# Clock frequency (clockTree)
+clock=4e7
+
+# other details
+# 
