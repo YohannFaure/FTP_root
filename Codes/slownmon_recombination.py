@@ -1,5 +1,6 @@
 import numpy as np
 import os
+import shutil
 
 # Load data
 loc1="C:/FTP_root/DATA/acq2106_178/stream.csv"
@@ -30,6 +31,42 @@ arr=(arr.reshape((arr.shape[0],arr.shape[1]//4,4))).mean(axis=-1)
 
 
 np.save(loc,arr)
+
+
+## This part creates the time associated with the acquisition. It assumes the parameters are written in the C:/FTP_root/parameters.txt
+loc_params="C:/FTP_root/parameters.txt"
+loc_time="C:/FTP_root/DATA/slowmon_time.npy"
+loc_params_to_save="C:/FTP_root/DATA/parameters.txt"
+
+with open(loc_params, 'r') as f:
+    code = f.read()
+    exec(code)
+
+
+def time_from_params(loc_params):
+
+    time_slowmon=np.array(range(arr.shape[-1]))
+
+    if fs_demand==1:
+        n=1
+    elif fs_demand==45:
+        n=2
+    elif fs_demand==65:
+        n=3
+    elif fs_demand==85:
+        n=4
+    else:
+        return(time_slowmon)
+
+    M=clock/1e6
+    f_sm=f_ref*M*n
+    return(time_slowmon/f_sm)
+
+time_slowmon=time_from_params(loc_params)
+np.save(loc_time,time_slowmon)
+np.save(loc_time,time_slowmon)
+shutil.copy(loc_params, loc_params_to_save)
+
 
 
 ## This part saves the data in a format usable by all my routines, and converts from voltage to \epsilon
