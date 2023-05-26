@@ -8,8 +8,27 @@ loc2="C:/FTP_root/DATA/acq2106_377/stream.csv"
 loc="C:/FTP_root/DATA/slowmon.npy"
 loc_dict="C:/FTP_root/DATA/Full_Daq.npy"
 
-data1=np.loadtxt(loc1,delimiter=",").T
-data2=np.loadtxt(loc2,delimiter=",").T
+
+def hand_load(location):
+    with open(location) as f:
+        lines=f.readlines()
+        data=[]
+        for i in range(len(lines)):
+            try :
+                lineval=eval(lines[i])
+            except :
+                print(i)
+            if len(lineval)==33:
+                data.append(lineval)
+    return(np.array(data))
+
+try:
+    data1=np.loadtxt(loc1,delimiter=",").T
+    data2=np.loadtxt(loc2,delimiter=",").T
+except:
+    data1=hand_load(loc1)
+    data2=hand_load(loc2)
+
 
 # find the longest one to synchronize
 s1=data1.shape[-1]
@@ -38,12 +57,14 @@ loc_params="C:/FTP_root/parameters.txt"
 loc_time="C:/FTP_root/DATA/slowmon_time.npy"
 loc_params_to_save="C:/FTP_root/DATA/parameters.txt"
 
-with open(loc_params, 'r') as f:
-    code = f.read()
-    exec(code)
+def load_params(loc_params):
+    with open(loc_params, 'r') as f:
+        code = f.read()
+    return(code)
 
+exec(load_params(loc_params))
 
-def time_from_params(loc_params):
+def time_from_params():
 
     time_slowmon=np.array(range(arr.shape[-1]))
 
@@ -62,7 +83,7 @@ def time_from_params(loc_params):
     f_sm=f_ref*M*n
     return(time_slowmon/f_sm)
 
-time_slowmon=time_from_params(loc_params)
+time_slowmon=time_from_params()
 np.save(loc_time,time_slowmon)
 np.save(loc_time,time_slowmon)
 shutil.copy(loc_params, loc_params_to_save)
