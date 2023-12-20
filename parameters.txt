@@ -1,4 +1,5 @@
 # reference frequency for the computation
+# Do not change that unless you really know what you are doing
 f_ref=1.915
 
 # FS Demand (CSS>capture>Slowmon)
@@ -7,5 +8,19 @@ fs_demand=85
 # Clock frequency (clockTree)
 clock=4e7
 
+# Gages positions
+
+x=np.arange(0.01,0.16,0.01)
+
+# Mapping of the channels (substract 1 for python indexing)
+# 1  - 15 : 5 first gages
+# 16 - 31 : 5 next gages
+# 32 - 46 : 5 next gages
+# 16      : Fn
+# 32      : Fs
+# 48      : Trigger
+
 # other details
-# 
+# 15 gages, all accross the interface
+# no lube, no grains
+# starts from -1mm to +2 to 3mm, @0.02mm/s
